@@ -20,6 +20,7 @@ router.route('/employees/:id?')
   return employee;
 }
 
+#api post
 async function post(req, res, next) {
   try {
     let employee = getEmployeeFromRec(req);
@@ -59,6 +60,7 @@ const createSql =
   ) returning employee_id
   into :employee_id`;
 
+#api create
 async function create(emp) {
   const employee = Object.assign({}, emp);
 
@@ -93,6 +95,7 @@ async function put(req, res, next) {
   }
 }
 
+#api put
 module.exports.put = put;
 const updateSql =
  `update employees
@@ -108,6 +111,7 @@ const updateSql =
     department_id = :department_id
   where employee_id = :employee_id`;
 
+#api update
 async function update(emp) {
   const employee = Object.assign({}, emp);
   const result = await database.simpleExecute(updateSql, employee);
@@ -136,6 +140,7 @@ async function del(req, res, next) {
   }
 }
 
+#api delete
 module.exports.delete = del;
 const deleteSql =
  `begin
@@ -244,3 +249,12 @@ async function find(context) {
 }
 
 module.exports.find = find;
+
+#sorting of employee details
+SELECT Eno, Ename, Salary, E.deptmentid
+FROM EMP E INNER JOIN 
+                (SELECT deptmentid, COUNT(Ename) TotalEmps  
+                FROM EMP 
+                GROUP BY deptmentid) Sub
+ON E.deptmentid = Sub.deptmentid
+ORDER BY TotalEmps DESC
